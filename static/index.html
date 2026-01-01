@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Knowledge Graph</title>
+    <meta name="description" content="Query your infrastructure with natural language">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>
+                        <circle cx="12" cy="12" r="9" stroke-dasharray="4 4"/>
+                    </svg>
+                </div>
+                <span>EKG</span>
+            </div>
+            
+            <div class="view-toggle">
+                <button class="toggle-btn active" data-view="chat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Chat
+                </button>
+                <button class="toggle-btn" data-view="graph">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <circle cx="4" cy="6" r="2"/>
+                        <circle cx="20" cy="6" r="2"/>
+                        <circle cx="4" cy="18" r="2"/>
+                        <circle cx="20" cy="18" r="2"/>
+                        <path d="M6 7l4 4M14 11l4-4M6 17l4-4M14 13l4 4"/>
+                    </svg>
+                    Graph
+                </button>
+            </div>
+            
+            <div class="stats-panel">
+                <h3>Graph Stats</h3>
+                <div id="stats-content">
+                    <div class="stat-item">
+                        <span class="stat-label">Nodes</span>
+                        <span class="stat-value" id="stat-nodes">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Edges</span>
+                        <span class="stat-value" id="stat-edges">-</span>
+                    </div>
+                </div>
+                <div id="node-types" class="node-types"></div>
+            </div>
+            
+            <div class="quick-queries">
+                <h3>Quick Queries</h3>
+                <button class="quick-btn" data-query="List all services">All Services</button>
+                <button class="quick-btn" data-query="List all databases">All Databases</button>
+                <button class="quick-btn" data-query="What teams are there?">All Teams</button>
+                <button class="quick-btn" data-query="What's the blast radius of redis-main?">Redis Blast Radius</button>
+                <button class="quick-btn" data-query="How does api-gateway connect to payments-db?">API to Payments Path</button>
+                <button class="quick-btn" data-query="Who owns payment-service?">Payment Owner</button>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <header class="header">
+                <h1>Engineering Knowledge Graph</h1>
+                <p class="subtitle">Ask questions about your infrastructure in natural language</p>
+            </header>
+            
+            <div class="chat-container" id="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message assistant">
+                        <div class="message-avatar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 2v4m0 12v4M2 12h4m12 0h4"/>
+                            </svg>
+                        </div>
+                        <div class="message-content">
+                            <p>Welcome! I'm your Engineering Knowledge Graph assistant. I can help you understand your infrastructure.</p>
+                            <p>Try asking questions like:</p>
+                            <ul>
+                                <li>"Who owns the payment service?"</li>
+                                <li>"What breaks if redis-main goes down?"</li>
+                                <li>"How does api-gateway connect to orders-db?"</li>
+                                <li>"What does order-service depend on?"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <form id="chat-form" class="chat-form">
+                        <input 
+                            type="text" 
+                            id="chat-input" 
+                            class="chat-input" 
+                            placeholder="Ask about your infrastructure..."
+                            autocomplete="off"
+                        >
+                        <button type="submit" class="send-btn" id="send-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="graph-container" id="graph-container" style="display: none;">
+                <div class="graph-controls">
+                    <button id="reset-zoom" class="graph-control-btn">Reset View</button>
+                    <div class="graph-legend">
+                        <span class="legend-item"><span class="legend-dot service"></span>Service</span>
+                        <span class="legend-item"><span class="legend-dot database"></span>Database</span>
+                        <span class="legend-item"><span class="legend-dot cache"></span>Cache</span>
+                        <span class="legend-item"><span class="legend-dot team"></span>Team</span>
+                    </div>
+                </div>
+                <svg id="graph-svg"></svg>
+                <div id="node-tooltip" class="node-tooltip"></div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="/static/app.js"></script>
+</body>
+</html>
